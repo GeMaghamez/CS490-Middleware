@@ -1,6 +1,4 @@
-<?php
-
-require "Controller.php";
+<?php namespace controllers;
 
 class LoginController extends Controller {
 	

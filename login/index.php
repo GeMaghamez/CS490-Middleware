@@ -1,6 +1,7 @@
-<?php
+<?php namespace login;
 
-require "../Controllers/LoginController.php";
+require_once "../autoloader.php";
+use \controllers\LoginController;
 
 $controller = new LoginController;
 $controller->handleRequest();

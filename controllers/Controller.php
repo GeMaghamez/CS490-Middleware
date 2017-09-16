@@ -1,13 +1,11 @@
-<?php
-
-require "../Context.php";
+<?php namespace controllers;
 
 class Controller {
 
 	protected $context;
 	
 	public function __construct() {
-		$this->context = Context::getInstance();
+		$this->context = \Context::getInstance();
 	}
 	
 	public function handleRequest() {
