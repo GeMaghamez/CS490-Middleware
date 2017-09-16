@@ -16,7 +16,11 @@ class Context {
 		return preg_split("/.\/" . $this->app_name . "/", 
 		$_SERVER['REQUEST_URI'])[1];
 	}
-	
+
+	public function getContentType() {
+	    return $_SERVER['CONTENT_TYPE'];
+    }
+
 	public static function getInstance() {
 		if (self::$shared_instance == NULL) {
 			self::$shared_instance = new Context();
