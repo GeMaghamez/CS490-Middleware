@@ -4,11 +4,11 @@ use util\TypedProperty;
 
 class LoginRequest extends Decodable {
 
-    public $ucid;
+    public $username;
     public $password;
 
     public function __construct() {
-        $this->ucid = new TypedProperty("ucid","string");
+        $this->username = new TypedProperty("username","string");
         $this->password = new TypedProperty("password","string");
     }
 }

@@ -38,7 +38,7 @@ class LoginController extends Controller {
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => "user=" . $request->ucid->getValue() . "&pass=" . $request->password->getValue() . "&uuid=0xACA021"
+            CURLOPT_POSTFIELDS => "user=" . $request->username->getValue() . "&pass=" . $request->password->getValue() . "&uuid=0xACA021"
         ));
 
         $response = curl_exec($session);
