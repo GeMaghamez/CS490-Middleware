@@ -1,8 +1,10 @@
 <?php namespace models;
 
-class Decodable {
+class Codable {
 
-    public static function fromJSON($jsonString) {}
+    public static function fromJSON($jsonString) {
+        return self::fromAssociativeArray(json_decode($jsonString, true));
+    }
 
     // TODO: review function and make sure it work for all cases.
     public static function fromXML($xmlString) {
@@ -43,5 +45,14 @@ class Decodable {
         }
 
         return $obj;
+    }
+
+    public function toJSON() {
+        $array = [];
+        foreach (get_object_vars($this) as $property) {
+            $array[$property->getName()] = $property->getValue();
+        }
+
+        return json_encode($array);
     }
 }

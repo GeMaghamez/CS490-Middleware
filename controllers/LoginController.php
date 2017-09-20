@@ -13,10 +13,12 @@ class LoginController extends Controller {
 
             $requestBody = json_decode(file_get_contents('php://input'), true);
             $request = LoginRequest::fromAssociativeArray($requestBody);
-            $njitloginResponse = $this->loginToNJIT($request);
+            $njitloginResponse = $this->context->loginToNjit($request);
+            $loginResponse = $this->context->login($request);
 
             $response = array(
-                "njitLogin" => $njitloginResponse->message->getValue()
+                "njitLogin" => $njitloginResponse->message->getValue(),
+                "authorized" => $loginResponse->message->getValue()
             );
 
             echo json_encode($response);
@@ -25,31 +27,4 @@ class LoginController extends Controller {
         }
 
 	}
-
-	private function loginToNJIT($request) {
-        $session = curl_init();
-
-        curl_setopt_array($session, array(
-            CURLOPT_URL => "https://cp4.njit.edu/cp/home/login",
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => "user=" . $request->username->getValue() . "&pass=" . $request->password->getValue() . "&uuid=0xACA021"
-        ));
-
-        $response = curl_exec($session);
-        $err = curl_errno($session);
-
-        curl_close($session);
-
-        if ($err) {
-            throw new \Exception(curl_strerror($err));
-        }
-
-        return NjitLoginResponse::fromXML($response);
-    }
 }

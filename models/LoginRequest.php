@@ -2,7 +2,7 @@
 
 use util\TypedProperty;
 
-class LoginRequest extends Decodable {
+class LoginRequest extends Codable {
 
     public $username;
     public $password;

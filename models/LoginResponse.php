@@ -2,11 +2,11 @@
 
 use util\TypedProperty;
 
-class NjitLoginResponse extends Codable {
+class LoginResponse extends Codable {
 
     public $message;
 
     public function __construct() {
-        $this->message = new TypedProperty("title","string");
+        $this->message = new TypedProperty("message","string");
     }
 }
