@@ -8,11 +8,11 @@ class RestService {
         $this->session = curl_init();
     }
 
-    public function startRequest($method, $url, $request) {
+    public function startRequest($method, $url, $postFields) {
         curl_setopt_array($this->session, array(
             CURLOPT_URL => $url,
             CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_POSTFIELDS => $request->toJSON(),
+            CURLOPT_POSTFIELDS => $postFields,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",

@@ -55,4 +55,13 @@ class Codable {
 
         return json_encode($array);
     }
+
+    public function toFormKVPairs() {
+        $array = [];
+        foreach (get_object_vars($this) as $property) {
+            $array[] =  $property->getName() . "=" . $property->getValue();
+        }
+
+        return join("&",$array);
+    }
 }

@@ -35,13 +35,13 @@ class Context {
 
 	public function loginToNjit($request) {
 	    $url = "https://cp4.njit.edu/cp/home/login";
-	    $response = $this->session->startRequest("POST", $url, $request);
+	    $response = $this->session->startRequest("POST", $url, $request->toFormKVPairs());
 	    return NjitLoginResponse::fromXML($response);
     }
 
     public function login($request) {
 	    $url = "https://web.njit.edu/~mad63/cs490/userExchange.php";
-	    $response = $this->session->startRequest("POST", $url, $request);
+	    $response = $this->session->startRequest("POST", $url, $request->toJSON());
 	    return LoginResponse::fromJSON($response);
     }
 }

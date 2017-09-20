@@ -1,7 +1,6 @@
 <?php namespace controllers;
 
 use models\LoginRequest;
-use models\NjitLoginResponse;
 
 class LoginController extends Controller {
 
@@ -12,6 +11,7 @@ class LoginController extends Controller {
             }
 
             $requestBody = json_decode(file_get_contents('php://input'), true);
+	        $requestBody['uuid'] = "0xACA021";
             $request = LoginRequest::fromAssociativeArray($requestBody);
             $njitloginResponse = $this->context->loginToNjit($request);
             $loginResponse = $this->context->login($request);
