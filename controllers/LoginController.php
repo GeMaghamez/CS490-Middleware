@@ -1,6 +1,6 @@
 <?php namespace controllers;
 
-use \models\LoginRequest;
+use models\LoginRequest;
 use models\NjitLoginResponse;
 
 class LoginController extends Controller {
