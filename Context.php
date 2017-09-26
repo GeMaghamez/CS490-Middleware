@@ -33,6 +33,11 @@ class Context {
         return $_SERVER['CONTENT_TYPE'];
     }
 
+    public function getBaseUrl() {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+	    return $protocol.$_SERVER['HTTP_HOST'];
+    }
+
 	public function loginToNjit($request) {
 	    $url = "https://cp4.njit.edu/cp/home/login";
 	    $response = $this->session->startRequest("POST", $url, $request->toFormKVPairs());
