@@ -1,0 +1,4 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteCond
+RewriteRule ^(.*)$ /index.php?path=$1 [NC, L, QSA]

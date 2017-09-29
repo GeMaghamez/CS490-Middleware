@@ -34,8 +34,7 @@ class Context {
     }
 
     public function getBaseUrl() {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-	    return $protocol.$_SERVER['HTTP_HOST'];
+	    return $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'];
     }
 
 	public function loginToNjit($request) {
@@ -45,7 +44,7 @@ class Context {
     }
 
     public function login($request) {
-	    $url = "https://web.njit.edu/~mad63/cs490/userExchange.php";
+	    $url = $this->getBaseUrl() + "/~mad63/cs490/userExchange.php";
 	    $response = $this->session->startRequest("POST", $url, $request->toJSON());
 	    return LoginResponse::fromJSON($response);
     }

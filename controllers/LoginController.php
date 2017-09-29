@@ -9,7 +9,6 @@ class LoginController extends Controller {
 	        if ($this->context->getContentType() != "application/json") {
 	            throw new \Exception("Invalid content type, expected application/json");
             }
-
             $requestBody = json_decode(file_get_contents('php://input'), true);
 	        $requestBody['uuid'] = "0xACA021";
             $request = LoginRequest::fromAssociativeArray($requestBody);
