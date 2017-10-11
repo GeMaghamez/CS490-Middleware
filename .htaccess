@@ -1,4 +1,2 @@
 RewriteEngine On
-Options FollowSymLinks
-
-RewriteRule ^(.*)$ index.php?q=$1 [L,NC,QSA]
+RewriteRule ^(.*)$ %{CONTEXT_DOCUMENT_ROOT}/CS490-Middleware/index.php?q=$1 [L,NC,QSA]
