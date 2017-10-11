@@ -1,6 +1,6 @@
 <?php
 
-class RestService {
+class NetworkSession {
 
     private $session;
 
@@ -8,11 +8,11 @@ class RestService {
         $this->session = curl_init();
     }
 
-    public function startRequest($method, $url, $postFields) {
+    public function startRequest($url, $body, $method = "POST") {
         curl_setopt_array($this->session, array(
             CURLOPT_URL => $url,
             CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_POSTFIELDS => $postFields,
+            CURLOPT_POSTFIELDS => $body,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
