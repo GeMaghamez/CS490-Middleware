@@ -20,7 +20,7 @@ $router->add("login", function (BackendAPI $backendAPI) {
     return $backendAPI->forwardTo("/verifyUser.php");
 });
 
-$router->add("get_tests", function (BackendAPI $backendAPI) {
+$router->add("get_exams", function (BackendAPI $backendAPI) {
     return $backendAPI->forwardTo("/getExams.php");
 });
 

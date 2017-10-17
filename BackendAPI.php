@@ -10,7 +10,7 @@ class BackendAPI {
     }
 
     public function forwardTo($path) {
-        $url = $this->baseUrl + $path;
-        return $this->networkSession->startRequest($url,file_get_contents('php://input'));
+        $url = $this->baseUrl . $path;
+        return $this->networkSession->startRequest($url, file_get_contents('php://input'));
     }
 }
