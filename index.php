@@ -24,29 +24,24 @@ $router->add("get_exams", function (BackendAPI $backendAPI) {
     return $backendAPI->forwardTo("/getExams.php");
 });
 
-$router->add("create_test", function (BackendAPI $backendAPI) {
-    // return $backendAPI->forwardTo("/verifyUser.php");
-    print_r("create_tests reached");
+$router->add("create_exam", function (BackendAPI $backendAPI) {
+    return $backendAPI->forwardTo("/createExam.php");
 });
 
-$router->add("delete_test", function (BackendAPI $backendAPI) {
-    // return $backendAPI->forwardTo("/verifyUser.php");
-    print_r("delete_test reached");
+$router->add("delete_exam", function (BackendAPI $backendAPI) {
+    return $backendAPI->forwardTo("/deleteExam.php");
 });
 
 $router->add("get_question", function (BackendAPI $backendAPI) {
-    // return $backendAPI->forwardTo("/verifyUser.php");
-    print_r("get_question reached");
+    return $backendAPI->forwardTo("/getQuestion.php");
 });
 
 $router->add("create_question", function (BackendAPI $backendAPI) {
-    // return $backendAPI->forwardTo("/verifyUser.php");
-    print_r("create_question reached");
+    return $backendAPI->forwardTo("/createQuestion.php");
 });
 
 $router->add("update_question", function (BackendAPI $backendAPI) {
-    // return $backendAPI->forwardTo("/verifyUser.php");
-    print_r("update_question reached");
+    return $backendAPI->forwardTo("/editQuestion.php");
 });
 
 $router->add("submit_test", function (BackendAPI $backendAPI) {
