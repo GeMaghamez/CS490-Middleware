@@ -21,8 +21,7 @@ $router->add("login", function (BackendAPI $backendAPI) {
 });
 
 $router->add("get_tests", function (BackendAPI $backendAPI) {
-    // return $backendAPI->forwardTo("/verifyUser.php");
-    print_r("get_tests reached");
+    return $backendAPI->forwardTo("/getExams.php");
 });
 
 $router->add("create_test", function (BackendAPI $backendAPI) {
@@ -63,7 +62,7 @@ $router->add("submit_test", function (BackendAPI $backendAPI) {
 });
 
 try {
-    $router->call(getRoute());
+    echo $router->call(getRoute());
 } catch (Exception $e) {
     echo $e->getMessage();
 }
