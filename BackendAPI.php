@@ -9,8 +9,8 @@ class BackendAPI {
         $this->networkSession = new NetworkSession();
     }
 
-    public function login($requestBody) {
-        $url = $this->baseUrl . "/verifyUser.php";
-        return $this->networkSession->startRequest($url, $requestBody);
+    public function forwardTo($path) {
+        $url = $this->baseUrl + $path;
+        return $this->networkSession->startRequest($url,file_get_contents('php://input'));
     }
 }

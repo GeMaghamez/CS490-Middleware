@@ -17,39 +17,53 @@ function getRoute() {
 $router = new Router();
 
 $router->add("login", function (BackendAPI $backendAPI) {
-    echo $backendAPI->login(file_get_contents('php://input'));
+    return $backendAPI->forwardTo("/verifyUser.php");
 });
 
-$router->add("get_tests", function () {
+$router->add("get_tests", function (BackendAPI $backendAPI) {
+    // return $backendAPI->forwardTo("/verifyUser.php");
     print_r("get_tests reached");
 });
 
-$router->add("create_tests", function () {
+$router->add("create_test", function (BackendAPI $backendAPI) {
+    // return $backendAPI->forwardTo("/verifyUser.php");
     print_r("create_tests reached");
 });
 
-$router->add("delete_test", function () {
+$router->add("delete_test", function (BackendAPI $backendAPI) {
+    // return $backendAPI->forwardTo("/verifyUser.php");
     print_r("delete_test reached");
 });
 
-$router->add("get_question", function () {
+$router->add("get_question", function (BackendAPI $backendAPI) {
+    // return $backendAPI->forwardTo("/verifyUser.php");
     print_r("get_question reached");
 });
 
-$router->add("create_question", function () {
+$router->add("create_question", function (BackendAPI $backendAPI) {
+    // return $backendAPI->forwardTo("/verifyUser.php");
     print_r("create_question reached");
 });
 
-$router->add("update_question", function () {
+$router->add("update_question", function (BackendAPI $backendAPI) {
+    // return $backendAPI->forwardTo("/verifyUser.php");
     print_r("update_question reached");
 });
 
-$router->add("submit_test", function () {
-    print_r("submit_test reached");
+$router->add("submit_test", function (BackendAPI $backendAPI) {
+    $content = file_get_contents('php://input');
+    $code = urldecode(json_decode($content)->{'code'});
+    $grader = new AutoGrader();
+    $grader->executeCode($code);
+    if (empty($grader->lastStderr)) {
+        echo $grader->lastStdout;
+    } else {
+        echo $grader->lastStderr;
+    }
 });
 
 try {
     $router->call(getRoute());
 } catch (Exception $e) {
-    echo $e;
+    echo $e->getMessage();
 }

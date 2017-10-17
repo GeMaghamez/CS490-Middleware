@@ -2,7 +2,7 @@
 
 class Router {
 
-    private $router = array();
+    private $routes = array();
     private $backendAPI;
 
     public function __construct() {
@@ -17,7 +17,7 @@ class Router {
         if (array_key_exists($name, $this->routes)) {
             $this->routes[$name]($this->backendAPI);
         } else {
-            echo "page not found";
+            throw new InvalidArgumentException("Route /" . $name . " does not exist");
         }
     }
 }
