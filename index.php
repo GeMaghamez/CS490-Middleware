@@ -1,6 +1,8 @@
 <?php
 
 require_once "autoloader.php";
+ignore_user_abort(true);
+set_time_limit(0);
 
 if ($_SERVER['REQUEST_METHOD'] != "POST" || $_SERVER['CONTENT_TYPE'] != "application/json") {
     echo 'Incorrect HTTP method or content type';
@@ -12,6 +14,16 @@ function getRoute() {
     $route = explode($appName, $_SERVER['REQUEST_URI']);
     $cleanRoute = strtolower(trim($route[1], "/"));
     return $cleanRoute;
+}
+
+function sendResponse($response) {
+    ob_start();
+    echo $response;
+    header('Connection: close');
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
+    ob_flush();
+    flush();
 }
 
 $router = new Router();
@@ -47,13 +59,13 @@ $router->add("update_question", function (BackendAPI $backendAPI) {
 $router->add("submit_test", function (BackendAPI $backendAPI) {
     $content = file_get_contents('php://input');
     $code = urldecode(json_decode($content)->{'code'});
-    $grader = new AutoGrader();
-    $grader->executeCode($code);
-    if (empty($grader->lastStderr)) {
-        echo $grader->lastStdout;
-    } else {
-        echo $grader->lastStderr;
-    }
+    $runner = new PyRunner();
+    echo $runner->exec_python($code, $outputBuffers) . PHP_EOL;
+    print_r($outputBuffers);
+});
+
+$router->add("test", function (BackendAPI $backendAPI) {
+
 });
 
 try {
