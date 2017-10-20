@@ -62,6 +62,7 @@ $router->add("submit_test", function (BackendAPI $backendAPI) {
     $runner = new PyRunner();
     echo $runner->exec_python($code, $outputBuffers) . PHP_EOL;
     print_r($outputBuffers);
+    print_r(PyScanner::correctFunctionName($code, "main"));
 });
 
 $router->add("test", function (BackendAPI $backendAPI) {
