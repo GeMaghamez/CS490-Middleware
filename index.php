@@ -130,9 +130,8 @@ $router->add("submit_test", function (BackendAPI $backendAPI) {
         }
         $response['answeredQuestions'][] = $questionResponse;
     }
-    print_r(json_encode($response));
 
-    // return $backendAPI->submitGradedQuestions(json_encode($response));
+    return $backendAPI->submitGradedQuestions(json_encode($response));
 });
 
 $router->add("get_graded_exam", function (BackendAPI $backendAPI) {
