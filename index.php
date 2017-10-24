@@ -142,6 +142,10 @@ $router->add("get_exam_response", function (BackendAPI $backendAPI) {
     return $backendAPI->forwardTo("/getExamResponse.php");
 });
 
+$router->add("release_exam", function (BackendAPI $backendAPI) {
+    return $backendAPI->forwardTo("/releaseExam.php");
+});
+
 
 try {
     echo $router->call(getRoute());
