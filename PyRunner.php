@@ -8,9 +8,24 @@ class PyRunner {
     public $timeout = 1; // seconds
     public $maxSpace = 1024; // bytes
 
-    public function exec_python($code, &$outputBuffers, $input = null) {
+    public function exec_pythonScript($code, &$outputBuffers, $input = null) {
         if($script = tmpfile()) {
             fwrite($script, $code);
+            $path = stream_get_meta_data($script)['uri'];
+            $exitCode = $this->exec_timeout('python ' . $path, $outputBuffers, $input);
+            fclose($script);
+            return $exitCode;
+        }
+    }
+
+    public function exec_pythonFunction($code, $functionName, $functionParams, &$outputBuffers, $input = null) {
+        if($script = tmpfile()) {
+            fwrite($script, $code);
+            $parameters = $functionParams;
+            if(is_array($functionParams)){
+                $parameters = join(",", $functionParams);
+            }
+            fwrite($script, "\nprint(" . $functionName . "(" . $parameters . "))" );
             $path = stream_get_meta_data($script)['uri'];
             $exitCode = $this->exec_timeout('python ' . $path, $outputBuffers, $input);
             fclose($script);

@@ -1,6 +1,6 @@
-<?php
+<?php namespace Network;
 
-class NetworkSession {
+class CurlSession {
 
     private $session;
 

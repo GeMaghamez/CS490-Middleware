@@ -1,5 +1,7 @@
 <?php
 
+use Network\BackendAPI;
+
 class Router {
 
     private $routes = array();
