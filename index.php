@@ -126,7 +126,9 @@ $router->add("submit_test", function (BackendAPI $backendAPI) {
                     break;
             }
             $codeCheckResponse['score'] = $checkStatus ? $codeCheck->maxScore : 0;
+            $codeCheckResponse['maxScore'] = $codeCheck->maxScore;
             $questionResponse['codeChecks'][] = $codeCheckResponse;
+
         }
         $response['answeredQuestions'][] = $questionResponse;
     }
