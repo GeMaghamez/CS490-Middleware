@@ -2,7 +2,6 @@
 
 use Network\BackendAPI;
 use Network\Requests\ExamSubmissionRequest;
-use Models\AnsweredQuestion;
 use Models\QuestionInfo;
 
 require_once "autoloader.php";
@@ -126,7 +125,9 @@ $router->add("submit_test", function (BackendAPI $backendAPI) {
                     break;
             }
             $codeCheckResponse['score'] = $checkStatus ? $codeCheck->maxScore : 0;
+            $codeCheckResponse['maxScore'] = $codeCheck->maxScore;
             $questionResponse['codeChecks'][] = $codeCheckResponse;
+
         }
         $response['answeredQuestions'][] = $questionResponse;
     }
@@ -144,6 +145,10 @@ $router->add("get_exam_response", function (BackendAPI $backendAPI) {
 
 $router->add("release_exam", function (BackendAPI $backendAPI) {
     return $backendAPI->forwardTo("/releaseExam.php");
+});
+
+$router->add("edit_response", function (BackendAPI $backendAPI) {
+    return $backendAPI->forwardTo("/responseEdit.php");
 });
 
 
