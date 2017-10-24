@@ -11,8 +11,8 @@ class ExamSubmissionRequest extends Decodable {
 
     public  function __construct($JSONObject) {
         $this->authToken = $this->validateTypeRequired("string", "authToken", $JSONObject);
-        $this->userId = $this->validateTypeRequired("string", "userID", $JSONObject);
-        $this->examId = $this->validateTypeRequired("string", "examID", $JSONObject);
+        $this->userId = $this->validateTypeRequired("integer", "userID", $JSONObject);
+        $this->examId = $this->validateTypeRequired("integer", "examID", $JSONObject);
         $answeredQuestions = $this->validateTypeRequired("array", "answeredQuestions", $JSONObject);
 
         foreach ($answeredQuestions as $question) {
