@@ -2,10 +2,10 @@
 
 class CodeCheck extends Decodable{
     public $name;
-    public $maxScore;
+    public $codeCheckMaxScore;
 
     public function __construct($JSONObject) {
         $this->name = $this->validateTypeRequired("string", "codeCheckName", $JSONObject);
-        $this->maxScore = $this->validateTypeRequired("string", "maxScore", $JSONObject);
+        $this->codeCheckMaxScore = $this->validateTypeRequired("string", "codeCheckMaxScore", $JSONObject);
     }
 }

@@ -8,7 +8,8 @@ class CurlSession {
         $this->session = curl_init();
     }
 
-    public function startRequest($url, $body, $method = "POST") {
+    public function startRequest($url, $body, $method = "POST")
+    {
         curl_setopt_array($this->session, array(
             CURLOPT_URL => $url,
             CURLOPT_CUSTOMREQUEST => $method,
@@ -28,7 +29,15 @@ class CurlSession {
             throw new \Exception(curl_strerror($err));
         }
 
-        return $response;
+        if (preg_match('/2[0-9]{2}/', $this->statusCode())) {
+            return $response;
+        } elseif (preg_match('/[4-5][0-9]{2}/', $this->statusCode())) {
+            throw new \Exception("Http request failed with status code : " . $this->statusCode());
+        }
+    }
+
+    private function statusCode(){
+        return curl_getinfo($this->session)['http_code'];
     }
 
     public function __destruct()

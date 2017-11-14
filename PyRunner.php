@@ -18,22 +18,33 @@ class PyRunner {
         }
     }
 
-    public function exec_pythonFunction($code, $functionName, $functionParams, &$outputBuffers, $input = null) {
-        if($script = tmpfile()) {
+    public function exec_pythonFunction($code, $functionName, $functionArguments, &$outputBuffers, $input = null) {
+         if($script = tmpfile()) {
             fwrite($script, $code);
-            $parameters = $functionParams;
-            if(is_array($functionParams)){
-                $parameters = join(",", $functionParams);
+            $parameters = $functionArguments;
+            if(is_array($functionArguments)){
+                $parameters = join(",", $functionArguments);
             }
-            fwrite($script, "\nprint(" . $functionName . "(" . $parameters . "))" );
+            fwrite($script, "\nprint(\"returned value: \" + str(" . $functionName . "(" . $parameters . ")))" );
             $path = stream_get_meta_data($script)['uri'];
             $exitCode = $this->exec_timeout('python ' . $path, $outputBuffers, $input);
             fclose($script);
+
+            if(preg_match('/(?<=returned value: ).*(?=\n)/', $outputBuffers['stdout'],$matches)) {
+                $match = $matches[0];
+                $outputBuffers['returnedValue'] = $match;
+                $outputBuffers['stdout'] = preg_replace("/^returned value: .*$/sm", "", $outputBuffers['stdout']);
+            }
+
             return $exitCode;
         }
     }
 
     private function exec_timeout($cmd, &$outputBuffers, $input = null) {
+        // clear buffers
+        $outputBuffers['stdout'] = "";
+        $outputBuffers['stderr'] = "";
+
         // File descriptors passed to the process.
         $descriptors = array(
             0 => array('pipe', 'r'),  // stdin
@@ -103,11 +114,17 @@ class PyRunner {
         fclose($pipes[2]);
         fclose($pipes[3]);
 
+        $this->cleanStrerr($outputBuffers);
+
         proc_close($process);
         if(!is_null($specialExitCode)) {
             return $specialExitCode;
         } else {
-            return $exitCode;
+            return (int)$exitCode;
         }
+    }
+
+    private function cleanStrerr(&$outbuffer) {
+        $outbuffer['stderr'] = preg_replace('/.*(?=line)/m', '',$outbuffer['stderr']);
     }
 }

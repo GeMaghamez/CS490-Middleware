@@ -61,7 +61,7 @@ $router->add("update_question", function (BackendAPI $backendAPI) {
 });
 
 $router->add("submit_test", function (BackendAPI $backendAPI) {
-    $pyRunner = new PyRunner();
+    $autoGrader = new AutoGrader();
     $examSubmissionRequest = new ExamSubmissionRequest(json_decode(file_get_contents("php://input")));
     $getQuestionInfoRequest = [
         "authToken" => $examSubmissionRequest->authToken,
@@ -78,58 +78,11 @@ $router->add("submit_test", function (BackendAPI $backendAPI) {
     ];
 
     foreach ($examSubmissionRequest->answeredQuestions as $question) {
-        $questionResponse = [
-            "questID" => $question->questionId,
-            "answer" => $question->answer,
-            "testCase" => 0,
-            "codeChecks" => []
-        ];
-
         $getQuestionInfoRequest["questions"][0] = $question->questionId;
         $request = json_encode($getQuestionInfoRequest);
         $questionInfo = new QuestionInfo(json_decode($backendAPI->getQuestionInfo($request))[0]);
-        $questionInfo->output = str_replace(" ", "", $questionInfo->output);
-
-        if(PyScanner::correctFunctionName($question->answer, $questionInfo->functionName)) {
-            $exitCode = $pyRunner->exec_pythonFunction($question->answer, $questionInfo->functionName, $questionInfo->input, $output);
-            $output['stdout'] = trim(str_replace(" ", "",$output['stdout']));
-            if($exitCode == 0 && $output['stdout'] == $questionInfo->output) {
-                $questionResponse['testCase'] = 1;
-            }
-            $output = array();
-        }
-
-        foreach ($questionInfo->codeChecks as $codeCheck) {
-            $codeCheckResponse = [
-                'checkName' => $codeCheck->name
-            ];
-            $checkStatus = false;
-            switch($codeCheck->name) {
-                case "correctFunctionParams" :
-                    $checkStatus = PyScanner::correctFunctionParams($question->answer,$questionInfo->functionName,$questionInfo->parameters);
-                    break;
-                case "correctFunctionName" :
-                    $checkStatus = PyScanner::correctFunctionName($question->answer,$questionInfo->functionName);
-                    break;
-                case "hasForLoopUse":
-                    $checkStatus = PyScanner::hasForLoopUse($question->answer);
-                    break;
-                case "hasWhileLoopUse":
-                    $checkStatus = PyScanner::hasWhileLoopUse($question->answer);
-                    break;
-                case "hasReturnStatement":
-                    $checkStatus = PyScanner::hasReturnStatement($question->answer);
-                    break;
-                case "hasDictionaryUse" :
-                    $checkStatus = PyScanner::hasDictionaryUse($question->answer);
-                    break;
-            }
-            $codeCheckResponse['score'] = $checkStatus ? $codeCheck->maxScore : 0;
-            $codeCheckResponse['maxScore'] = $codeCheck->maxScore;
-            $questionResponse['codeChecks'][] = $codeCheckResponse;
-
-        }
-        $response['answeredQuestions'][] = $questionResponse;
+        $gradedQuestion = $autoGrader->grade($questionInfo, $question->answer);
+        $response['answeredQuestions'][] = $gradedQuestion;
     }
 
     return $backendAPI->submitGradedQuestions(json_encode($response));
@@ -150,7 +103,6 @@ $router->add("release_exam", function (BackendAPI $backendAPI) {
 $router->add("edit_response", function (BackendAPI $backendAPI) {
     return $backendAPI->forwardTo("/responseEdit.php");
 });
-
 
 try {
     echo $router->call(getRoute());
