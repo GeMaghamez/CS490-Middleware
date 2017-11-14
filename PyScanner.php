@@ -79,9 +79,9 @@ class PyScanner {
             return $this->hasCorrectFunctionParameters($questionInfo->functionName, $questionInfo->parameters);
         } elseif ($codeCheck->name == "hasDictionaryUse") {
             return $this->hasDictionaryUse();
-        } elseif ($codeCheck->name == "hasForLoop") {
+        } elseif ($codeCheck->name == "hasForLoopUse") {
             return $this->hasForLoopUse();
-        } elseif ($codeCheck->name == "hasWhileLoop") {
+        } elseif ($codeCheck->name == "hasWhileLoopUse") {
             return $this->hasWhileLoopUse();
         } elseif ($codeCheck->name == "usesRecursion") {
             return $this->usesRecursion();
