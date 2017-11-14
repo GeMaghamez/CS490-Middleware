@@ -29,9 +29,9 @@ class AutoGrader {
         ];
 
         $this->scanner->scanCode($answer);
-        if($this->scanner->hasFunction($questionInfo->functionName)){
+        if($this->scanner->containerType == ContainerType::Functions && $this->scanner->hasFunction($questionInfo->functionName)){
             $score = $this->gradeTestCases($answer,$questionInfo->functionName,$questionInfo->testCases, $comment, $answerType);
-        } else {
+        } elseif($this->scanner->containerType == ContainerType::Functions ) {
             // Attempt to replace function names
             $possible = [];
             foreach ($this->scanner->getFunctionNames() as $func){
@@ -48,6 +48,8 @@ class AutoGrader {
             $comment = $bestScore['comment'];
             $answerType = $bestScore['answerType'];
             $score = $bestScore['passed'];
+        } elseif ($this->scanner->containerType == ContainerType::Script ) {
+            $score = $this->gradeTestCases($answer,null ,$questionInfo->testCases,$comment,$answerType);
         }
 
         $gradedQuestion["testCase"] = round($score * $questionInfo->testCaseMaxScore);
