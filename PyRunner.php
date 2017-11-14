@@ -44,6 +44,7 @@ class PyRunner {
         // clear buffers
         $outputBuffers['stdout'] = "";
         $outputBuffers['stderr'] = "";
+        $outputBuffers['returnedValue'] = "";
 
         // File descriptors passed to the process.
         $descriptors = array(

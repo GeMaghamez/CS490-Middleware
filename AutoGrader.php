@@ -112,8 +112,13 @@ class AutoGrader {
                 $comment .= "Test Passed! got answer : " . $expectedOut . "\n";
             } else {
                 // incorrect answer
-                if(($outputValue = $outputBuffers['returnedValue']) != "None" || $outputValue = $outputBuffers['stdout']) {
-                    $comment .= "Test Failed got answer : " . $outputValue . "\n";
+
+                if($outputBuffers['returnedValue'] != "None") {
+                    $comment .= "Test Failed got answer : " . $outputBuffers['returnedValue'] . "\n";
+                } elseif (!empty($outputBuffers['stdout'])) {
+                    $comment .= "Test Failed got answer : " . $outputBuffers['stdout'] . "\n";
+                } else {
+                    $comment .= "Test Failed got nothing \n";
                 }
             }
         }

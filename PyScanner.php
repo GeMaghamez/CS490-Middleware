@@ -93,6 +93,10 @@ class PyScanner {
     }
 
     public function hasFunction($funcName) {
+        if ($this->containerType == ContainerType::Script) {
+            return false;
+        }
+
         foreach ($this->container as $writtenFunction) {
             if ($writtenFunction->functionName === $funcName) {
                 return true;
@@ -112,6 +116,9 @@ class PyScanner {
     }
 
     public function hasCorrectFunctionParameters($functionName, $functionParams) {
+        if ($this->containerType == ContainerType::Script) {
+            return false;
+        }
         foreach ($this->container as $writtenFunction) {
             if ($writtenFunction->functionParameters == $functionParams) {
                 return true;
