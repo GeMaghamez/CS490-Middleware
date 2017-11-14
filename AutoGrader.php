@@ -35,9 +35,7 @@ class AutoGrader {
             // Attempt to replace function names
             $possible = [];
             foreach ($this->scanner->getFunctionNames() as $func){
-                $augmentedCode = $answer;
-                $augmentedCode = preg_replace("/$func(?=:|\()/",$questionInfo->functionName,$augmentedCode);
-                $passed = $this->gradeTestCases($augmentedCode,$questionInfo->functionName,$questionInfo->testCases,$comment,$answerType);
+                $passed = $this->gradeTestCases($answer,$func,$questionInfo->testCases,$comment,$answerType);
                 $possible[$passed] = [
                     "replacedFunc" => $func,
                     "comment" => $comment,
