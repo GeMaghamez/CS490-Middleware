@@ -95,23 +95,23 @@ class AutoGrader {
         $expectedOut = trim($expectedOut);
 
         if($exitCode == STDOUT_BUFFER_OVERFLOW) {
-            $comment .= "Error Occurred : Exceeded code maximum allowable space";
+            $comment .= "Error Occurred : Exceeded code maximum allowable space\n";
         } elseif($exitCode == PROCESS_TIMED_OUT) {
-            $comment .= "Error Occurred : Exceeded code run time limit";
+            $comment .= "Error Occurred : Exceeded code run time limit\n";
         } elseif($exitCode != 0) {
             $comment .= "Error Occurred : " . $outputBuffers['stderr'];
         } else {
             // no errors, possibly correct answer
             if($outputBuffers['stdout'] == $expectedOut) {
                 $answerType = AnswerType::printed;
-                $comment .= "Test Passed! got answer : " . $expectedOut;
+                $comment .= "Test Passed! got answer : " . $expectedOut . "\n";
             } elseif($outputBuffers['returnedValue'] == $expectedOut) {
                 $answerType = AnswerType::returned;
-                $comment .= "Test Passed! got answer : " . $expectedOut;
+                $comment .= "Test Passed! got answer : " . $expectedOut . "\n";
             } else {
                 // incorrect answer
                 if(($outputValue = $outputBuffers['returnedValue']) != "None" || $outputValue = $outputBuffers['stdout']) {
-                    $comment .= "Test Failed got answer : " . $outputValue;
+                    $comment .= "Test Failed got answer : " . $outputValue . "\n";
                 }
             }
         }
