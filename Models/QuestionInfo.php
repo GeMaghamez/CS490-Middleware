@@ -6,6 +6,7 @@ class QuestionInfo extends Decodable {
     public $functionName;
     public $maxScore;
     public $testCaseMaxScore;
+    public $codeCheckMaxScore;
     public $parameters;
     public $testCases;
     public $codeChecks;
@@ -27,9 +28,11 @@ class QuestionInfo extends Decodable {
             $this->testCases[] = new TestCase($testCase);
         }
 
+        $this->codeCheckMaxScore = 0;
         $codeChecks = $this->validateTypeRequired("array", "codeChecks", $JSONObject);
         foreach ($codeChecks as $codeCheck) {
             $this->codeChecks[] = new CodeCheck($codeCheck);
+            $this->codeCheckMaxScore += end($this->codeChecks)->codeCheckMaxScore;
         }
     }
 }

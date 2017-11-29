@@ -30,12 +30,12 @@ class AutoGrader {
 
         $this->scanner->scanCode($answer);
         if($this->scanner->containerType == ContainerType::Functions && $this->scanner->hasFunction($questionInfo->functionName)){
-            $score = $this->gradeTestCases($answer,$questionInfo->functionName,$questionInfo->testCases, $comment, $answerType);
+            $score = $this->gradeTestCases($answer,$questionInfo->functionName,$questionInfo->testCases, $questionInfo->testCaseMaxScore, $comment, $answerType);
         } elseif($this->scanner->containerType == ContainerType::Functions ) {
             // Attempt to replace function names
             $possible = [];
             foreach ($this->scanner->getFunctionNames() as $func){
-                $passed = $this->gradeTestCases($answer,$func,$questionInfo->testCases,$comment,$answerType);
+                $passed = $this->gradeTestCases($answer,$func,$questionInfo->testCases,$questionInfo->testCaseMaxScore, $comment,$answerType);
                 $possible[$passed] = [
                     "replacedFunc" => $func,
                     "comment" => $comment,
@@ -49,13 +49,13 @@ class AutoGrader {
             $answerType = $bestScore['answerType'];
             $score = $bestScore['passed'];
         } elseif ($this->scanner->containerType == ContainerType::Script ) {
-            $score = $this->gradeTestCases($answer,null ,$questionInfo->testCases,$comment,$answerType);
+            $score = $this->gradeTestCases($answer,null ,$questionInfo->testCases, $questionInfo->testCaseMaxScore, $comment,$answerType);
         }
 
         $gradedQuestion["testCase"] = round($score * $questionInfo->testCaseMaxScore);
 
         $codeCheckScore = $this->scanner->checkCodeChecks($questionInfo, $answerType, $codeCheckComments);
-        $comment .= $codeCheckComments;
+        $comment .= "<hr>" . $codeCheckComments;
 
         $gradedQuestion["comment"] = $comment;
         $gradedQuestion["codeCheckScore"] = $codeCheckScore;
@@ -63,19 +63,23 @@ class AutoGrader {
         return $gradedQuestion;
     }
 
-    private function gradeTestCases($code, $func, $testCases, &$comment, &$answerType) {
-        $comment = "Test Cases :\n\n";
+    private function gradeTestCases($code, $func, $testCases, $totalTestCaseValue, &$comment, &$answerType) {
+        $comment = "<pre>Test Cases: Total Points ($totalTestCaseValue) <br><br>";
         $answerType = 0;
         $counter = 1;
         $testsPassed = 0;
+        $testCaseValue = (float) $totalTestCaseValue / count($testCases);
         foreach ($testCases as $testCase) {
-            $testsPassed += $this->gradeTestCase($code, $func, $testCase->input, $testCase->output, $tempComment, $counter++,$tempAnswerType);
+            $testsPassed += $this->gradeTestCase($code, $func, $testCase->input, $testCase->output, $tempComment, $counter++, $testCaseValue, $tempAnswerType);
             $comment.= $tempComment;
 
             if(!is_null($tempAnswerType)) {
                 $answerType |= $tempAnswerType;
+                $tempAnswerType = null;
             }
         }
+
+        $comment .= "Total points lost (Rounded): " . round((count($testCases) - $testsPassed) * $testCaseValue) . "</pre>";
 
         if($answerType == 0) {
             $answerType = null;
@@ -84,8 +88,8 @@ class AutoGrader {
         return (float) $testsPassed / count($testCases);
     }
 
-    private function gradeTestCase($code, $func, $in, $expectedOut, &$comment, $testCaseNumber, &$answerType = null) {
-        $comment = "Test Case ". $testCaseNumber . ": Input : " . $in . " Expected output : " . $expectedOut . "\n";
+    private function gradeTestCase($code, $func, $in, $expectedOut, &$comment, $testCaseNumber, $testCaseValue, &$answerType = null) {
+        $comment = "Test Case ". $testCaseNumber . "; Input: " . $in . " Expected output: " . $expectedOut . "<br>";
 
         if($this->scanner->containerType == ContainerType::Functions) {
             $exitCode = $this->runner->exec_pythonFunction($code, $func, $in, $outputBuffers);
@@ -97,29 +101,28 @@ class AutoGrader {
         $expectedOut = trim($expectedOut);
 
         if($exitCode == STDOUT_BUFFER_OVERFLOW) {
-            $comment .= "Error Occurred : Exceeded code maximum allowable space\n";
+            $comment .= "Error Occurred: Exceeded code maximum allowable space<br><br>";
         } elseif($exitCode == PROCESS_TIMED_OUT) {
-            $comment .= "Error Occurred : Exceeded code run time limit\n";
+            $comment .= "Error Occurred: Exceeded code run time limit<br><br>";
         } elseif($exitCode != 0) {
             $comment .= "Error Occurred : " . $outputBuffers['stderr'];
         } else {
             // no errors, possibly correct answer
-            if($outputBuffers['stdout'] == $expectedOut) {
-                $answerType = AnswerType::printed;
-                $comment .= "Test Passed! got answer : " . $expectedOut . "\n";
-            } elseif($outputBuffers['returnedValue'] == $expectedOut) {
-                $answerType = AnswerType::returned;
-                $comment .= "Test Passed! got answer : " . $expectedOut . "\n";
+            if($outputBuffers['stdout'] == $expectedOut || $outputBuffers['returnedValue'] == $expectedOut) {
+                $answerType = ($outputBuffers['stdout'] == $expectedOut) ? AnswerType::printed : AnswerType::returned;
+                $comment .= "<span style=\"color: green\">Test Passed! output was: " . $expectedOut . ".</span><br><br>";
             } else {
                 // incorrect answer
-
+                $comment .= "<span style=\"color: red\">Test Failed output was: ";
                 if($outputBuffers['returnedValue'] != "None") {
-                    $comment .= "Test Failed got answer : " . $outputBuffers['returnedValue'] . "\n";
+                    $comment .= $outputBuffers['returnedValue'];
                 } elseif (!empty($outputBuffers['stdout'])) {
-                    $comment .= "Test Failed got answer : " . $outputBuffers['stdout'] . "\n";
+                    $comment .= $outputBuffers['stdout'];
                 } else {
-                    $comment .= "Test Failed got nothing \n";
+                    $comment .= "nothing";
                 }
+
+                $comment .= ".\t- " . $testCaseValue . " points</span><br><br>";
             }
         }
 
