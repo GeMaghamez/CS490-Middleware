@@ -55,7 +55,7 @@ class AutoGrader {
         $gradedQuestion["testCase"] = round($score * $questionInfo->testCaseMaxScore);
 
         $codeCheckScore = $this->scanner->checkCodeChecks($questionInfo, $answerType, $codeCheckComments);
-        $comment .= "<hr>" . $codeCheckComments;
+        $comment .= "<br><hr><br>" . $codeCheckComments;
 
         $gradedQuestion["comment"] = $comment;
         $gradedQuestion["codeCheckScore"] = $codeCheckScore;
@@ -101,11 +101,11 @@ class AutoGrader {
         $expectedOut = trim($expectedOut);
 
         if($exitCode == STDOUT_BUFFER_OVERFLOW) {
-            $comment .= "Error Occurred: Exceeded code maximum allowable space<br><br>";
+            $comment .= "<span style=\"color: red\">Error Occurred: Exceeded code maximum allowable space</span><br><br>";
         } elseif($exitCode == PROCESS_TIMED_OUT) {
-            $comment .= "Error Occurred: Exceeded code run time limit<br><br>";
+            $comment .= "<span style=\"color: red\">Error Occurred: Exceeded code run time limit</span><br><br>";
         } elseif($exitCode != 0) {
-            $comment .= "Error Occurred : " . $outputBuffers['stderr'];
+            $comment .= "<span style=\"color: red\">Error Occurred : " . $outputBuffers['stderr'] . "</span><br><br>";
         } else {
             // no errors, possibly correct answer
             if($outputBuffers['stdout'] == $expectedOut || $outputBuffers['returnedValue'] == $expectedOut) {
