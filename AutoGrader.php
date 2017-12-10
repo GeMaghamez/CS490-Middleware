@@ -101,16 +101,17 @@ class AutoGrader {
         $expectedOut = trim($expectedOut);
 
         if($exitCode == STDOUT_BUFFER_OVERFLOW) {
-            $comment .= "<span style=\"color: red\">Error Occurred: Exceeded code maximum allowable space</span><br><br>";
+            $comment .= "<span style=\"color: red\">Error Occurred: Exceeded code maximum allowable space</span>";
         } elseif($exitCode == PROCESS_TIMED_OUT) {
-            $comment .= "<span style=\"color: red\">Error Occurred: Exceeded code run time limit</span><br><br>";
+            $comment .= "<span style=\"color: red\">Error Occurred: Exceeded code run time limit</span>";
         } elseif($exitCode != 0) {
-            $comment .= "<span style=\"color: red\">Error Occurred : " . $outputBuffers['stderr'] . "</span><br><br>";
+            $comment .= "<span style=\"color: red\">Error Occurred : " . $outputBuffers['stderr'] . "</span>";
         } else {
             // no errors, possibly correct answer
             if($outputBuffers['stdout'] == $expectedOut || $outputBuffers['returnedValue'] == $expectedOut) {
                 $answerType = ($outputBuffers['stdout'] == $expectedOut) ? AnswerType::printed : AnswerType::returned;
                 $comment .= "<span style=\"color: green\">Test Passed! output was: " . $expectedOut . ".</span><br><br>";
+                return !is_null($answerType);
             } else {
                 // incorrect answer
                 $comment .= "<span style=\"color: red\">Test Failed output was: ";
@@ -122,9 +123,11 @@ class AutoGrader {
                     $comment .= "nothing";
                 }
 
-                $comment .= ".\t- " . $testCaseValue . " points</span><br><br>";
+
             }
         }
+
+        $comment .= ".\t- " . $testCaseValue . " points</span><br><br>";
 
         return !is_null($answerType);
     }
