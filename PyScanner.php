@@ -67,7 +67,7 @@ class PyScanner {
             }
         }
 
-        $comment .= "<br>Total points lost (Rounded): " . ($questionInfo->codeCheckMaxScore - $totalScore) . "</pre>";
+        $comment .= "<br>Total points lost: " . ($questionInfo->codeCheckMaxScore - $totalScore) . "</pre>";
         return $totalScore;
     }
 

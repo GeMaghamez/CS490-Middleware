@@ -52,7 +52,7 @@ class AutoGrader {
             $score = $this->gradeTestCases($answer,null ,$questionInfo->testCases, $questionInfo->testCaseMaxScore, $comment,$answerType);
         }
 
-        $gradedQuestion["testCase"] = round($score * $questionInfo->testCaseMaxScore);
+        $gradedQuestion["testCase"] = $score * $questionInfo->testCaseMaxScore;
 
         $codeCheckScore = $this->scanner->checkCodeChecks($questionInfo, $answerType, $codeCheckComments);
         $comment .= "<br><hr><br>" . $codeCheckComments;
@@ -79,7 +79,7 @@ class AutoGrader {
             }
         }
 
-        $comment .= "Total points lost (Rounded): " . round((count($testCases) - $testsPassed) * $testCaseValue) . "</pre>";
+        $comment .= "Total points lost: " . (count($testCases) - $testsPassed) * $testCaseValue . "</pre>";
 
         if($answerType == 0) {
             $answerType = null;
