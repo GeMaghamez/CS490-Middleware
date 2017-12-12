@@ -14,6 +14,7 @@ class PyScanner {
         //find all function signatures
         if(preg_match_all("/def.*:$/m", $code, $matches)) {
             $this->containerType = ContainerType::Functions;
+            $this->container = [];
             foreach ($matches[0] as $match) {
                 $indentSpaceCount = strpos($match, "def");
                 $bodyStart = strpos($code,"\n", strpos($code, $match) + strlen($match));
