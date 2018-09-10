@@ -14,6 +14,7 @@ class PyScanner {
         //find all function signatures
         if(preg_match_all("/def.*:$/m", $code, $matches)) {
             $this->containerType = ContainerType::Functions;
+            $this->container = [];
             foreach ($matches[0] as $match) {
                 $indentSpaceCount = strpos($match, "def");
                 $bodyStart = strpos($code,"\n", strpos($code, $match) + strlen($match));
@@ -56,19 +57,18 @@ class PyScanner {
     }
 
     public function checkCodeChecks($questionInfo, $answerType = null, &$comment) {
-        $comment = "Code Checks: \n\n";
+        $comment = "<pre>Code Constraints: Total Points (" . $questionInfo->codeCheckMaxScore . ")<br><br>";
         $totalScore = 0;
-        $counter = 1;
         foreach ($questionInfo->codeChecks as $codeCheck) {
             if($this->checkCodeCheck($codeCheck, $questionInfo, $answerType)) {
                 $totalScore += $codeCheck->codeCheckMaxScore;
-                $comment .= "Code Check " . $counter . ": " . $codeCheck->name . " Passed. Points earned : " . $codeCheck->codeCheckMaxScore . "\n";
+                $comment .= "<span style=\"color: green\">Constraint " . $codeCheck->name . " was met.</span><br>";
             } else {
-                $comment .= "Code Check " . $counter . ": " . $codeCheck->name . " Failed. Points earned : 0\n";
+                $comment .= "<span style=\"color: red\">Constraint " . $codeCheck->name . " was not met.\t - " . $codeCheck->codeCheckMaxScore . " Points</span><br>";
             }
-            $counter++;
         }
 
+        $comment .= "<br>Total points lost: " . ($questionInfo->codeCheckMaxScore - $totalScore) . "</pre>";
         return $totalScore;
     }
 
